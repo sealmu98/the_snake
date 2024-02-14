@@ -42,6 +42,22 @@ pygame.display.set_caption('Змейка')
 clock = pygame.time.Clock()
 
 
+def handle_keys(game_object):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            raise SystemExit
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP and game_object.direction != DOWN:
+                game_object.next_direction = UP
+            elif event.key == pygame.K_DOWN and game_object.direction != UP:
+                game_object.next_direction = DOWN
+            elif event.key == pygame.K_LEFT and game_object.direction != RIGHT:
+                game_object.next_direction = LEFT
+            elif event.key == pygame.K_RIGHT and game_object.direction != LEFT:
+                game_object.next_direction = RIGHT
+
+
 # Тут опишите все классы игры.
 class GameObject:
     def __init__(self, body_color) -> None:
@@ -52,17 +68,19 @@ class GameObject:
         pass
 
 
-class Snake(GameObject):
+class Snake:
     pass
 
 
 class Apple(GameObject):
     def __init__(self, body_color) -> None:
-        
+        super().__init__(body_color)
+        self.position = self.randomize_position()
+
     def randomize_position(self):
-        self.position = (
-            randint(0, GRID_WIDTH * -1) * GRID_SIZE,
-            randint(0, GRID_HEIGHT * -1) * GRID_SIZE
+        return (
+            randint(0, GRID_WIDTH - 1) * GRID_SIZE,
+            randint(0, GRID_HEIGHT - 1) * GRID_SIZE
         )
 
     def draw(self, surface):
@@ -76,27 +94,27 @@ class Apple(GameObject):
 
 def main():
     # Тут нужно создать экземпляры классов.
-    apple = Apple()
-
+    apple = Apple(APPLE_COLOR)
+    apple.draw(screen)
     while True:
         clock.tick(SPEED)
 
         # Тут опишите основную логику игры.
         # Функция обработки действий пользователя
-        def handle_keys(game_object):
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    raise SystemExit
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP and game_object.direction != DOWN:
-                        game_object.next_direction = UP
-                    elif event.key == pygame.K_DOWN and game_object.direction != UP:
-                        game_object.next_direction = DOWN
-                    elif event.key == pygame.K_LEFT and game_object.direction != RIGHT:
-                        game_object.next_direction = LEFT
-                    elif event.key == pygame.K_RIGHT and game_object.direction != LEFT:
-                        game_object.next_direction = RIGHT
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                raise SystemExit
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP and snake.direction != DOWN:
+                    snake.next_direction = UP
+                elif event.key == pygame.K_DOWN and snake.direction != UP:
+                    snake.next_direction = DOWN
+                elif event.key == pygame.K_LEFT and snake.direction != RIGHT:
+                    snake.next_direction = LEFT
+                elif event.key == pygame.K_RIGHT and snake.direction != LEFT:
+                    snake.next_direction = RIGHT
+        pygame.display.update()
 
 
 if __name__ == '__main__':
