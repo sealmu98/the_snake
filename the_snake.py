@@ -80,13 +80,18 @@ class Apple(GameObject):
 class Snake(GameObject):
     """Унаследованный класс от GameObject, описывающий змейку и её поведение."""
 
-    def __init__(self, positions, length=1, body_color=SNAKE_COLOR):
+    def __init__(self,
+                 positions=((SCREEN_WIDTH // 2), (SCREEN_HEIGHT // 2)),
+                 length=1,
+                 body_color=SNAKE_COLOR):
+
         super().__init__(body_color)
         self.lenght = length
         self.positions = [positions]
-        self.direction = choice([UP, DOWN, LEFT, RIGHT])
+        self.direction = UP
         self.next_direction = None
         self.body_color = body_color
+        self.last = None
 
     def update_direction(self):
         """Метод обновления направления после нажатия на кнопку."""
@@ -102,9 +107,11 @@ class Snake(GameObject):
         # Вычисление новой позиции головы
         new_head_position = (
             head_position[0] + self.direction[0] * GRID_SIZE,
-            head_position[1] + self.direction[1])
-        if not (0 <= new_head_position[0] < SCREEN_WIDTH
-                and 0 <= new_head_position[1] < SCREEN_HEIGHT):
+            head_position[1] + self.direction[1] * GRID_SIZE)
+
+        if (not (0 <= new_head_position[0] < SCREEN_WIDTH
+                 and 0 <= new_head_position[1] < SCREEN_HEIGHT) or
+                new_head_position in self.positions[2:]):
             return self.reset
 
         # Проверка на столкновение с собой
@@ -119,11 +126,10 @@ class Snake(GameObject):
     def draw(self, surface):
         """Метод который отрисовывает змейку на экране, затирая след."""
         for position in self.positions[:-1]:
-            rect = (
-                pygame.Rect((position[0], position[1]), (GRID_SIZE, GRID_SIZE))
-            )
+            rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
             pygame.draw.rect(surface, self.body_color, rect)
             pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
+
 
     def get_head_position(self):
         """Метод который возвращает позицию головы змейки."""
@@ -131,7 +137,7 @@ class Snake(GameObject):
 
     def reset(self):
         """
-        Метод который сбрасывает змейку в начальное состояние 
+        Метод который сбрасывает змейку в начальное состояние
         после столкновения с собой.
         """
         pass
@@ -170,6 +176,7 @@ def main():
         snake.update_direction()
         snake.move
 
+        screen.fill(BOARD_BACKGROUND_COLOR)
         apple.draw(screen)
         snake.draw(screen)
 
