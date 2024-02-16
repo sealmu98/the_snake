@@ -51,18 +51,27 @@ class GameObject:
         self.body_color = body_color
 
     def draw(self):
-        """Абстрактный метод, который предназначен для переопределения в дочерних классах."""
+        """
+        Абстрактный метод, который предназначен
+        для переопределения в дочерних классах.
+        """
         pass
 
 
 class Apple(GameObject):
-    """Унаследованный класс от GameObject, описывающий яблоко и действия с ним."""
+    """
+    Унаследованный класс от GameObject,
+    описывающий яблоко и действия с ним.
+    """
 
     def __init__(self, position=None):
         super().__init__(position, APPLE_COLOR)
 
     def randomize_position(self):
-        """Метод который устанавливает случайное положение яблока на игровом поле."""
+        """
+        Метод который устанавливает
+        случайное положение яблока на игровом поле.
+        """
         self.position = (
             randint(0, GRID_WIDTH - 1) * GRID_SIZE,
             randint(0, GRID_HEIGHT - 1) * GRID_SIZE
@@ -77,7 +86,10 @@ class Apple(GameObject):
 
 
 class Snake(GameObject):
-    """Унаследованный класс от GameObject, описывающий змейку и её поведение."""
+    """
+    Унаследованный класс от GameObject,
+    описывающий змейку и её поведение.
+    """
 
     def __init__(self, position=None, length=1):
         super().__init__(position, SNAKE_COLOR)
@@ -99,8 +111,10 @@ class Snake(GameObject):
         head_position = self.get_head_position()
 
         # Вычисление новой позиции головы:
-        new_head_position = ((head_position[0] + self.direction[0] * GRID_SIZE) % SCREEN_WIDTH,
-                             (head_position[1] + self.direction[1] * GRID_SIZE) % SCREEN_HEIGHT)
+        new_head_position = ((head_position[0] + self.direction[0] * GRID_SIZE)
+                             % SCREEN_WIDTH,
+                             (head_position[1] + self.direction[1] * GRID_SIZE)
+                             % SCREEN_HEIGHT)
 
         # Проверка на столкновение с собой:
         if new_head_position in self.positions[1:]:
