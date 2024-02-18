@@ -116,12 +116,8 @@ class Snake(GameObject):
                              % SCREEN_WIDTH,
                              (head_position[1] + self.direction[1] * GRID_SIZE)
                              % SCREEN_HEIGHT)
-
-        # Проверка на столкновение с собой:
-        if new_head_position in self.positions[1:]:
-            self.reset()
-
         self.positions.insert(0, new_head_position)
+
         # Обновление списка позиций:
         if len(self.positions) > self.length:
             self.last = self.positions.pop()
@@ -186,6 +182,14 @@ def main():
             while apple.position in snake.positions:
                 apple.position = apple.randomize_position()
             snake.length += 1
+
+        # Проверка на столкновение с собой:
+        # Когда голова змеии поподает на координату тела,
+        # в кортеже positions получается две одинаковых координаты
+        # так как множество не может содерджать дубликаты элементов
+        # там на одну координату меньше
+        if len(snake.positions) > len(set(snake.positions)):
+            snake.reset()
 
         # Реализация отрисовки на экране:
         screen.fill(BOARD_BACKGROUND_COLOR)
